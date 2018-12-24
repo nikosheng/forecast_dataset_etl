@@ -334,6 +334,8 @@ def main(argv):
                 import_file = arg
             if opt in ("-o", "--output-folder"):
                 output_folder = arg
+                if not os.path.exists(output_folder):
+                    os.mkdir(output_folder)
 
     if not os.path.exists(import_file) or not os.path.exists(output_folder):
         sys.exit(2)
