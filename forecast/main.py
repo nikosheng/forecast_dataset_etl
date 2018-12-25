@@ -174,7 +174,6 @@ def export_to_excel_workbook(file_name, products, output):
     :param output: The output folder
     :return:
     """
-    export_lock.acquire()
     wb = Workbook()
 
     ws = wb.active  # 创建一个sheet
@@ -203,7 +202,6 @@ def export_to_excel_workbook(file_name, products, output):
 
     output_file = "{output}/{filename}.xlsx".format(output=output, filename=file_name)
     wb.save(output_file)
-    export_lock.release()
 
 
 def generate_by_hour(list, output):
