@@ -15,6 +15,10 @@ from operator import itemgetter
 import getopt
 import sys
 import os
+import threading
+
+# Export Lock
+export_lock = threading.Lock()
 
 
 class Prod:
@@ -170,6 +174,7 @@ def export_to_excel_workbook(file_name, products, output):
     :param output: The output folder
     :return:
     """
+    export_lock.acquire()
     wb = Workbook()
 
     ws = wb.active  # 创建一个sheet
@@ -198,6 +203,7 @@ def export_to_excel_workbook(file_name, products, output):
 
     output_file = "{output}/{filename}.xlsx".format(output=output, filename=file_name)
     wb.save(output_file)
+    export_lock.release()
 
 
 def generate_by_hour(list, output):
@@ -305,6 +311,7 @@ def generate_by_day(list, output):
         os.mkdir(output_dir)
     export_to_excel_workbook(file_name, converted_products, output_dir)
 
+
 def help():
     """
     Helper function
@@ -366,8 +373,12 @@ def main(argv):
         else:
             # Sort the product list by trade_time
             prod_in_same_category = sort_by_trade_time(prod_in_same_category)
-            generate_by_hour(prod_in_same_category, output_folder)
-            generate_by_day(prod_in_same_category, output_folder)
+            t1 = threading.Thread(target=generate_by_hour, args=(prod_in_same_category, output_folder,))
+            t2 = threading.Thread(target=generate_by_day, args=(prod_in_same_category, output_folder,))
+            t1.start()
+            t2.start()
+            # generate_by_hour(prod_in_same_category, output_folder)
+            # generate_by_day(prod_in_same_category, output_folder)
             prod_in_same_category = [prod]
             prev_prod = prod
 
