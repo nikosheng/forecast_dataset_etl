@@ -248,7 +248,10 @@ def generate_by_hour(list, output):
     # handle the last product list
     converted_products.append(gen_converted_prod(products=products_hour_period))
     # export to a new workbook based on hourly calculation
-    export_to_excel_workbook(file_name, converted_products, output)
+    output_dir = output + "/hour"
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    export_to_excel_workbook(file_name, converted_products, output_dir)
 
 
 def generate_by_day(list, output):
@@ -297,7 +300,10 @@ def generate_by_day(list, output):
     # handle the last product list
     converted_products.append(gen_converted_prod(products=products_daily_period))
     # export to a new workbook based on hourly calculation
-    export_to_excel_workbook(file_name, converted_products, output)
+    output_dir = output + "/day"
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    export_to_excel_workbook(file_name, converted_products, output_dir)
 
 def help():
     """
